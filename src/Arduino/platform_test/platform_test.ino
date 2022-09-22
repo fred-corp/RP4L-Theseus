@@ -11,15 +11,25 @@ void setup(){
 }
 
 void loop() {
-  digitalWrite(mot1A, HIGH);
-  analogWrite(mot1B, 127);
-  digitalWrite(mot2A, HIGH);
-  analogWrite(mot2B, 127);
+  move(127, 127);
   delay(1000);
-  digitalWrite(mot1A, LOW);
-  analogWrite(mot1B, 127);
-  digitalWrite(mot2A, LOW);
-  analogWrite(mot2B, 127);
+  move(-127, -127);
   delay(1000);
 }
 
+void move(int left, int right){
+  if(left > 0){
+    digitalWrite(mot1A, HIGH);
+    analogWrite(mot1B, left);
+  }else{
+    digitalWrite(mot1A, LOW);
+    analogWrite(mot1B, -left);
+  }
+  if(right > 0){
+    digitalWrite(mot2A, HIGH);
+    analogWrite(mot2B, right);
+  }else{
+    digitalWrite(mot2A, LOW);
+    analogWrite(mot2B, -right);
+  }
+}
