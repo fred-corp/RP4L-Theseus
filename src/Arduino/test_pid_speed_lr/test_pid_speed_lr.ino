@@ -70,17 +70,8 @@ void loop() {
 
     // }
     // move(0,0);
-    // delay(5000);
-    unsigned long last = millis();
-    while (millis()- last<1000){
-    RunPIDS(300,300);
-    getspeed();
-    move(255*(motG.Speed/1500),255*(motD.Speed/1500));
-    }
-    last = millis();
-    move(0,0);
-    delay(500);
-    Rotate(180);
+    delay(1000);
+    Rotate2(90,0);
 
 
 }
@@ -93,6 +84,18 @@ void goFor(unsigned long time, float speed){
     move(255*(motG.Speed/1500),255*(motD.Speed/1500));
     }
     move(0,0);
+}
+
+void goDist(double dist, float speed){
+  motG.Count_T = 0;
+  motD.Count_T = 0;
+  double par = 5.1*(motD.Count_T+motG.Count_T) /2;
+  while (par < dist){
+move(-speed,-speed);
+    Serial.println(par);
+    par = 5.1*(motD.Count_T+motG.Count_T) /2;
+  }
+  move(0,0);
 }
 
 void EncodeurG() {
@@ -201,9 +204,9 @@ void RunPIDS(float sG,float sD) {
 
   // motG.Speed = kpg*(setpoint-motG.MSpeed)+I_lastG+kiG*(setpoint-motG.MSpeed);
   // motD.Speed = kpd*(setpoint-motD.MSpeed)+I_lastD+kiD*(setpoint-motD.MSpeed);
-  Serial.println("aaa");
-  Serial.println(motG.MSpeed);
-  Serial.println(motD.MSpeed);
+  //Serial.println("aaa");
+  //Serial.println(motG.MSpeed);
+  //Serial.println(motD.MSpeed);
   // I_lastG = I_lastG+kiG*(setpoint-motG.MSpeed);
   // I_lastD = I_lastD+kiD*(setpoint-motD.MSpeed);
 
@@ -214,10 +217,11 @@ void RunPIDS(float sG,float sD) {
 
   //motG.Speed = OutputSpeedG;
   //motD.Speed = OutputSpeedD;
+
 }
 
 void Rotate(float deg){
-  float ticks = deg*(3.14/180)*122/5.1;
+  float ticks = abs(deg)*(3.14/180)*122/5.1;
   if (deg > 0){
     motG.Count = 0;
     while (motG.Count < ticks){
@@ -226,6 +230,25 @@ void Rotate(float deg){
     move(0,0);
   }
   if (deg < 0){
+    motD.Count = 0;
+    while (motD.Count < ticks){
+        move(0,100);
+    }
+    move(0,0);
+  }
+
+}
+
+void Rotate2(float deg, bool dir){
+  float ticks = deg*(3.14/180)*122/5.1;
+  if (dir){
+    motG.Count = 0;
+    while (motG.Count < ticks){
+        move(100,0);
+    }
+    move(0,0);
+  }
+  else{
     motD.Count = 0;
     while (motD.Count < ticks){
         move(0,100);
