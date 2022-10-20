@@ -1,17 +1,21 @@
 #define OUT_8 (8)
 #define LED_13 (13)
 
-#define PCICR_PORTD_MASK (1 << 2)
-#define PCICR_PORTD_CLEAR_FLAG (~(1 << 2))
-#define PCMSK2_PCINT23_ENALBE_MASK (1 << 7)
+#define PCICR_PORTD_MASK (1 << 1)
+#define PCICR_PORTD_CLEAR_FLAG (~(1 << 1))
+#define PCMSK2_PCINT23_ENALBE_MASK (1 << 0)
 
-ISR(PCINT2_vect) {
+ISR(PCINT1_vect) {
   PCIFR &= PCICR_PORTD_CLEAR_FLAG;  // Clear interrupt flag of PORTD
 
   digitalRead(LED_13) ? digitalWrite(LED_13, LOW) : digitalWrite(LED_13, HIGH);
+  Serial.println("aaaa");
+
+
 }
 
 void setup() {
+  Serial.begin(9600);
   pinMode(OUT_8, OUTPUT);
   pinMode(LED_13, OUTPUT);
   pinMode(7, INPUT);
@@ -20,7 +24,7 @@ void setup() {
 
   PCICR |= PCICR_PORTD_MASK; // Enable external interrupt on PORTD
   PCIFR &= PCICR_PORTD_CLEAR_FLAG; // Clear interrupt flag of PORTD
-  PCMSK2 |= PCMSK2_PCINT23_ENALBE_MASK; // Enable interrupt on pin 7 (PCINT23)
+  PCMSK1 |= PCMSK2_PCINT23_ENALBE_MASK; // Enable interrupt on pin 7 (PCINT23)
 }
 
 void loop() {
